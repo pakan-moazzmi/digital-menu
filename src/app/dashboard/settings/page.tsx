@@ -114,10 +114,10 @@ export default async function SettingsPage({
           </div>
 
           <SubmitButton
-            pendingText="�� ��� �����..."
+            pendingText="در حال ذخیره..."
             className="mt-2 rounded-lg bg-black px-4 py-2 text-white transition hover:bg-gray-800"
           >
-            ������ �������
+            ثبت و ذخیره اطلاعات
           </SubmitButton>
         </form>
       </div>

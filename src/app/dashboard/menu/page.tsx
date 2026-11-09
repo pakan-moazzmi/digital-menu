@@ -1,8 +1,10 @@
+
 import { getCurrentRestaurant } from "@/lib/supabase/get-current-restaurant";
 import { createMenuItemAction, deleteMenuItemAction } from "./actions";
 import { ImageUploadField } from "@/components/ImageUploadField";
 import { SubmitButton } from "@/components/SubmitButton";
-import { ErrorBanner } from "@/components/ErrorBanner"; 
+import { ErrorBanner } from "@/components/ErrorBanner";
+import { FREE_ITEM_LIMIT } from "@/lib/plans";
 
 const SPICINESS_LABELS = ["بدون تندی", "ملایم", "متوسط", "تند", "خیلی تند"];
 
@@ -26,6 +28,16 @@ export default async function MenuPage({
     .eq("restaurant_id", restaurant.id)
     .order("display_order", { ascending: true });
 
+  const { data: planRow } = await supabase
+    .from("restaurant_plans")
+    .select("plan")
+    .eq("restaurant_id", restaurant.id)
+    .single();
+
+  const isFree = (planRow?.plan ?? "free") === "free";
+  const itemCount = items?.length ?? 0;
+  const limitReached = isFree && itemCount >= FREE_ITEM_LIMIT;
+
   return (
     <main className="min-h-screen p-4 sm:p-8">
       <div className="mx-auto max-w-2xl">
@@ -47,6 +59,18 @@ export default async function MenuPage({
           </p>
         ) : (
           <>
+            {isFree && (
+              <p
+                className={`mb-4 rounded-lg p-3 text-sm ${
+                  limitReached ? "bg-amber-50 text-amber-700" : "bg-gray-50 text-gray-600"
+                }`}
+              >
+                پلن رایگان: {itemCount.toLocaleString("fa-IR")} از{" "}
+                {FREE_ITEM_LIMIT.toLocaleString("fa-IR")} غذا
+                {limitReached && " — به سقف رسیده‌اید و افزودن غذای جدید ممکن نیست."}
+              </p>
+            )}
+
             <form
               action={createMenuItemAction}
               className="mb-8 flex flex-col gap-3 rounded-2xl border border-gray-200 p-5"

@@ -1,4 +1,4 @@
-# Supabase
+New-Item -ItemType File -Path "src\lib\supabase\get-current-restaurant.ts"# Supabase
 .branches
 .temp
 

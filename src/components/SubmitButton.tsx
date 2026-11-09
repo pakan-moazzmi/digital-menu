@@ -4,7 +4,7 @@ import { useFormStatus } from "react-dom";
 
 export function SubmitButton({
   children,
-  pendingText = "در حال ارسال...",
+  pendingText = "در حال ذخیره...",
   className = "",
 }: {
   children: React.ReactNode;

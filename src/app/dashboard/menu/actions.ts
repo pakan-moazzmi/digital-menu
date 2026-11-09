@@ -183,9 +183,17 @@ export async function createMenuItemAction(formData: FormData) {
     .single();
 
   if (itemError || !newItem) {
-    console.error("Menu item insert failed:", itemError);
-    redirect("/dashboard/menu?error=" + encodeURIComponent("خطا در افزودن غذا"));
+  if (itemError?.message?.includes("PLAN_LIMIT_REACHED")) {
+    redirect(
+      "/dashboard/menu?error=" +
+        encodeURIComponent(
+          "به سقف تعداد غذاهای پلن رایگان رسیده‌اید. برای افزودن غذای بیشتر پلن خود را ارتقا دهید."
+        )
+    );
   }
+  console.error("Menu item insert failed:", itemError);
+  redirect("/dashboard/menu?error=" + encodeURIComponent("خطا در افزودن غذا"));
+}
 
   try {
     const ingredientIds = await upsertNamesAndGetIds(

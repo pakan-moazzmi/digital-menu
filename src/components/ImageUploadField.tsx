@@ -9,13 +9,16 @@ const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 export function ImageUploadField({
   restaurantId,
   name,
+  initialUrl = null,
 }: {
   restaurantId: string;
   name: string;
+  initialUrl?: string | null;
 }) {
-  const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
+  const [uploadedUrl, setUploadedUrl] = useState<string | null>(initialUrl);
   const [error, setError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+
 
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
