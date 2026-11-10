@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
+import { createHash } from "crypto";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
+
+const h8 = (s: string) =>
+  createHash("sha256").update(s).digest("hex").slice(0, 8);
 
 export async function GET() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
@@ -9,6 +13,15 @@ export async function GET() {
 
   const out: Record<string, unknown> = {
     urlDefined: url.length > 0,
+    urlLength: url.length,
+    urlHash8: h8(url),
+    urlPath: (() => {
+      try {
+        return new URL(url.trim()).pathname;
+      } catch {
+        return "INVALID_URL";
+      }
+    })(),
     urlHost: (() => {
       try {
         return new URL(url.trim()).host;
@@ -16,12 +29,10 @@ export async function GET() {
         return "INVALID_URL";
       }
     })(),
-    urlHasWhitespaceOrQuote: /\s|["']/.test(url),
-    urlEndsWithSlash: url.endsWith("/"),
     keyDefined: key.length > 0,
     keyLength: key.length,
+    keyHash8: h8(key),
     keyPrefix: key.slice(0, 15),
-    keyHasWhitespaceOrQuote: /\s|["']/.test(key),
   };
 
   try {
